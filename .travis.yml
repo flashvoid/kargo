@@ -11,6 +11,7 @@ env:
     CONTAINER_ENGINE=docker
     PRIVATE_KEY=$GCE_PRIVATE_KEY
     ANSIBLE_KEEP_REMOTE_FILES=1
+    CLUSTER_MODE=foo
   matrix:
     # Debian Jessie
     - >-
@@ -121,7 +122,8 @@ script:
     -e cloud_image=${CLOUD_IMAGE}
     -e inventory_path=${PWD}/inventory/inventory.ini
     -e cloud_region=${CLOUD_REGION}
-    -e cluster_mode=separate
+    -e cluster_mode=${CLUSTER_MODE}
+
     # Create cluster
   - "$HOME/.local/bin/ansible-playbook -i inventory/inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root -e cloud_provider=gce  $LOG_LEVEL -e kube_network_plugin=${KUBE_NETWORK_PLUGIN} cluster.yml"
     # Tests Cases
