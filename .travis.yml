@@ -11,10 +11,10 @@ env:
     CONTAINER_ENGINE=docker
     PRIVATE_KEY=$GCE_PRIVATE_KEY
     ANSIBLE_KEEP_REMOTE_FILES=1
-    CLUSTER_MODE=foo
   matrix:
     # Debian Jessie
     - >-
+      CLUSTER_MODE=foo
       KUBE_NETWORK_PLUGIN=flannel
       CLOUD_IMAGE=debian-8-kubespray
       CLOUD_REGION=europe-west1-b
