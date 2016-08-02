@@ -53,14 +53,14 @@ before_script:
   - echo $PRIVATE_KEY | base64 -d > $HOME/.ssh/id_rsa
   - echo $GCE_PEM_FILE | base64 -d > $HOME/.ssh/gce
   - chmod 400 $HOME/.ssh/id_rsa
-  - chmod 755 $HOME/.venv/bin/ansible-playbook
-  - $HOME/.venv/bin/ansible-playbook --version
+#  - chmod 755 $HOME/.venv/bin/ansible-playbook
+  - ansible-playbook --version
   - cp tests/ansible.cfg .
 #  - "echo $HOME/.venv/bin/ansible-playbook -i inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root -e '{\"cloud_provider\": true}'  $LOG_EVENT -e kube_network_plugin=${KUBE_NETWORK_PLUGIN} setup-kubernetes/cluster.yml"
 
 script:
   - >
-    $HOME/.venv/bin/ansible-playbook tests/cloud_playbooks/create-gce.yml -i tests/local_inventory/hosts.cfg -c local $LOG_EVENT
+    ansible-playbook tests/cloud_playbooks/create-gce.yml -i tests/local_inventory/hosts.cfg -c local $LOG_EVENT
     -e mode=${MODE}
     -e test_id=${TEST_ID}
     -e kube_network_plugin=${KUBE_NETWORK_PLUGIN}
