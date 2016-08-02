@@ -6,6 +6,15 @@
     cloud_machine_type: g1-small
 
   tasks:
+    - name: install libcloud
+      pip: name=apache-libcloud
+
+    - name: Getting PYTHONPATH
+      local_action: shell python -c 'import sys; print(":".join(sys.path)); import libcloud'
+      register: pythonpath
+
+    - debug: msg="PYTHONPATH {{ pythonpath.stdout }}"
+
     - name: replace_test_id
       set_fact:
         test_name: "{{test_id |regex_replace('\\.', '-')}}"
