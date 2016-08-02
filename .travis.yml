@@ -17,7 +17,6 @@ env:
       KUBE_NETWORK_PLUGIN=flannel
       CLOUD_IMAGE=debian-8-kubespray
       CLOUD_REGION=europe-west1-b
-      CLUSTER_MODE=separate
    #  - >-
    #    KUBE_NETWORK_PLUGIN=calico
    #    CLOUD_IMAGE=debian-8-kubespray
@@ -122,7 +121,7 @@ script:
     -e cloud_image=${CLOUD_IMAGE}
     -e inventory_path=${PWD}/inventory/inventory.ini
     -e cloud_region=${CLOUD_REGION}
-    -e cluster_mode=${CLUSTER_MODE}
+    -e cluster_mode=separate
     # Create cluster
   - "$HOME/.local/bin/ansible-playbook -i inventory/inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root -e cloud_provider=gce  $LOG_LEVEL -e kube_network_plugin=${KUBE_NETWORK_PLUGIN} cluster.yml"
     # Tests Cases
