@@ -1,6 +1,6 @@
 sudo: required
 dist: trusty
-
+language: python
 git:
   depth: 5
 
@@ -29,20 +29,20 @@ env:
       KUBE_NETWORK_PLUGIN=weave
       CLOUD_IMAGE=debian-8-kubespray
       CLOUD_REGION=us-east1-d
-
+#      MODE=separate
 
 before_install:
   # Install Ansible.
-  - pip install --user virtualenv
-  - virtualenv $HOME/.venv
-  - source $HOME/.venv/bin/activate
+#  - pip install --user virtualenv
+#  - virtualenv $HOME/.venv
+#  - source $HOME/.venv/bin/activate
   - pip install pip -U
   - pip install boto -U
   - pip install ansible -U
   - pip install netaddr -U
   - pip install apache-libcloud -U
 
-#cache:
+# cache:
 #  - directories:
 #    - $HOME/.cache/pip
 #    - $HOME/.venv
@@ -56,11 +56,11 @@ before_script:
   - chmod 755 $HOME/.venv/bin/ansible-playbook
   - $HOME/.venv/bin/ansible-playbook --version
   - cp tests/ansible.cfg .
-#  - "echo $HOME/.venv/bin/ansible-playbook -i inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root -e '{\"cloud_provider\": true}'  $LOG_LEVEL -e kube_network_plugin=${KUBE_NETWORK_PLUGIN} setup-kubernetes/cluster.yml"
+#  - "echo $HOME/.venv/bin/ansible-playbook -i inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root -e '{\"cloud_provider\": true}'  $LOG_EVENT -e kube_network_plugin=${KUBE_NETWORK_PLUGIN} setup-kubernetes/cluster.yml"
 
 script:
   - >
-    $HOME/.venv/bin/ansible-playbook tests/cloud_playbooks/create-gce.yml -i tests/local_inventory/hosts.cfg -c local $LOG_LEVEL
+    $HOME/.venv/bin/ansible-playbook tests/cloud_playbooks/create-gce.yml -i tests/local_inventory/hosts.cfg -c local $LOG_EVENT
     -e mode=${MODE}
     -e test_id=${TEST_ID}
     -e kube_network_plugin=${KUBE_NETWORK_PLUGIN}
@@ -72,18 +72,18 @@ script:
     -e cloud_region=${CLOUD_REGION}
 
     # Create cluster
-  - "$HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root -e cloud_provider=gce  $LOG_LEVEL -e kube_network_plugin=${KUBE_NETWORK_PLUGIN} cluster.yml"
+  - "$HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root -e cloud_provider=gce  $LOG_EVENT -e kube_network_plugin=${KUBE_NETWORK_PLUGIN} cluster.yml"
     # Tests Cases
     ## Test Master API
-  - $HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini tests/testcases/010_check-apiserver.yml $LOG_LEVEL
+  - $HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini tests/testcases/010_check-apiserver.yml $LOG_EVENT
     ## Create a POD
-  - $HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root tests/testcases/020_check-create-pod.yml $LOG_LEVEL
+  - $HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root tests/testcases/020_check-create-pod.yml $LOG_EVENT
     ## Ping the between 2 pod
-  - $HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root tests/testcases/030_check-network.yml $LOG_LEVEL
+  - $HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini -u $SSH_USER -e ansible_ssh_user=$SSH_USER $SSH_ARGS -b --become-user=root tests/testcases/030_check-network.yml $LOG_EVENT
 
 after_script:
   - >
-    $HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini tests/cloud_playbooks/delete-gce.yml -c local  $LOG_LEVEL
+    $HOME/.venv/bin/ansible-playbook -i inventory/inventory.ini tests/cloud_playbooks/delete-gce.yml -c local  $LOG_EVENT
     -e test_id=${TEST_ID}
     -e kube_network_plugin=${KUBE_NETWORK_PLUGIN}
     -e gce_project_id=${GCE_PROJECT_ID}
