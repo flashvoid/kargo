@@ -33,7 +33,7 @@ env:
 
 before_install:
   # Install Ansible.
-  - pip install virtualenv
+  - pip install --user virtualenv
   - virtualenv $HOME/.venv
   - source $HOME/.venv/bin/activate
   - pip install pip -U
@@ -42,10 +42,10 @@ before_install:
   - pip install netaddr -U
   - pip install apache-libcloud -U
 
-# cache:
-#   - directories:
-#     - $HOME/.cache/pip
-#     - $HOME/.venv
+#cache:
+#  - directories:
+#    - $HOME/.cache/pip
+#    - $HOME/.venv
 
 before_script:
   - echo "RUN $TRAVIS_JOB_NUMBER $KUBE_NETWORK_PLUGIN $CONTAINER_ENGINE "
