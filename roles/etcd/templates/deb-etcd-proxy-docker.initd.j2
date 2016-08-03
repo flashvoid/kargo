@@ -16,15 +16,7 @@ PATH=/sbin:/usr/sbin:/bin/:/usr/bin
 DESC="etcd-proxy"
 NAME=etcd-proxy
 DAEMON={{ docker_bin_dir | default("/usr/bin") }}/docker
-DAEMON_ARGS='--restart=always --env-file=/etc/etcd-proxy.env \
---net=host \
---stop-signal=SIGKILL \
--v /usr/share/ca-certificates/:/etc/ssl/certs:ro \
---name={{ etcd_proxy_member_name | default("etcd-proxy") }} \
-{{ etcd_image_repo }}:{{ etcd_image_tag }} \
-{% if etcd_after_v3 %}
-{{ etcd_container_bin_dir }}etcd
-{% endif %}'
+DAEMON_ARGS='run --restart=always --env-file=/etc/etcd-proxy.env --net=host --stop-signal=SIGKILL -v /usr/share/ca-certificates/:/etc/ssl/certs:ro --name={{ etcd_proxy_member_name | default("etcd-proxy") }} {{ etcd_image_repo }}:{{ etcd_image_tag }} {% if etcd_after_v3 %} {{ etcd_container_bin_dir }}etcd {% endif %}'
 
 
 SCRIPTNAME=/etc/init.d/$NAME
